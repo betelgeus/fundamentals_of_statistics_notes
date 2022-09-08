@@ -13,6 +13,7 @@
 # 4. Do EDA (exploratory data analysis) to see the data
 # 5. Find F and P
 # 6. Conclusion
+# 7. References
 
 # 1. Import libraries
 import pandas as pd
@@ -151,15 +152,34 @@ f_statistics_dose, p_value_dose = stats.f_oneway(dose_low, dose_high)
 print('f_statistics_dose:', f_statistics_dose, 'p_value_dose:', p_value_dose)
 
 # F and P values, the sum_sq, mean_sq and df using anova
-# Here we are using age+dose
+# Here we are using age + dose
 # source https://www.statsmodels.org/devel/generated/statsmodels.stats.anova.anova_lm.html
-expr_lm = ols('expr ~ age+dose',data=df_cleaned).fit()
-table = sm.stats.anova_lm(expr_lm, type=2) # Type 2 Anova DataFrame
-print(table)
+expr_lm = ols('expr ~ age+dose', data=df_cleaned).fit()
+# Type 2 Anova DataFrame
+table_1 = sm.stats.anova_lm(expr_lm, type=2)
+print(table_1)
 
 # sum_sq for Therapy is SSB (=total sum of squares between groups)
-# mean_sq for Therapy is SSB/df
+# mean_sq for Therapy is SSB divide by degrees of freedom
 # df for Therapy is degrees of freedom between groups
 # sum_sq for Residual is SSW (=total sum of squares within groups)
-# mean_sq for Residual is SSW/df
+# mean_sq for Residual is SSW divide by degrees of freedom
 # df for Residual is degrees of freedom within groups
+
+
+# Here we are using age*dose, to also see this as a combined parameter
+# The Residual becomes 60, from 61 because we introduce this another group
+expr_lm = ols('expr ~ age*dose', data=df_cleaned).fit()
+table_2 = sm.stats.anova_lm(expr_lm, type=2)
+print(table_2)
+
+# 6. Conclusion
+# If H-zero is TRUE then F has to be very small, close to 0 and P > 0.05
+# We can see that in this vase the P is < 0.05 and F is fairly large (7,44) for the age group.
+# This allows us to say that there is statistical significance in results grouped by age (Young and Old)
+# For the dose and age:dose result P > 0.05 and F is very small, less than 1.
+# This allows us to say that H-zero is true for dose and age:dose groups.
+
+# 7. References
+# Based on Masha Kubyshina, Statistics Basics Two Factor Dispersion
+# https://github.com/MashaKubyshina/Data_Science_Scripts/blob/master/Statistics_Basics_Two_Factor_Dispersion.ipynb
