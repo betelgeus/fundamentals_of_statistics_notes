@@ -1,4 +1,5 @@
-# Main question: Is any of the individual parameters or combined make the results between 4 groups statistically significant?
+# Main question: Is any of the individual parameters or combined make the results
+# between 4 groups statistically significant?
 # We have results from 4 tests Young-Low_dosis, Young-High_dosis, Old-Low_dosis, Old-High_dosis (see data link below)
 # Our Zero hypothesis (H-zero) is that the results between groups are not statistically significant
 # For H-zero to be true F has to be very small (close to 0) and P > 0.05
@@ -61,18 +62,22 @@ for i in range(len(df_cleaned)):
 # 4. Do EDA (exploratory data analysis) to see the data
 # Let's explore data looking at boxplot by dose
 # We can see the overlap of medians and boxes
-df_cleaned.boxplot('expr', by='dose', figsize=(12, 8), grid=True)
+# df_cleaned.boxplot('expr', by='dose', figsize=(12, 8), grid=True)
 # plt.show()
 
-# 4. Do EDA (exploratory data analysis) to see the data
 # Let's explore data looking at boxplot by age
 # In this case there is a bit more difference and the median of each group is outside the box of the other group
-df_cleaned.boxplot('expr', by='age', figsize=(12, 8), grid=True)
+# df_cleaned.boxplot('expr', by='age', figsize=(12, 8), grid=True)
 # plt.show()
 
-# another view is via pairplot (not too useful here)
-sns.pairplot(df_cleaned, y_vars="expr", x_vars=['age', 'dose'])
+# Another view is via pairplot (not too useful here)
+# sns.pairplot(df_cleaned, y_vars="expr", x_vars=['age', 'dose'])
 # plt.show()
+
+# Let's get means, dispersion and how expression influenced by age, dose via pointplot
+sns.set()
+sns.pointplot(data=df_cleaned, x='dose', y='expr', hue='age', dodge=True, capsize=.1, errwidth=1, palette='colorblind')
+plt.show()
 
 
 # 5. Let's do the one-way ANOVA tests. The null hypothesis that four groups have the same population mean
@@ -166,12 +171,12 @@ print(table_1)
 # mean_sq for Residual is SSW divide by degrees of freedom
 # df for Residual is degrees of freedom within groups
 
-
 # Here we are using age*dose, to also see this as a combined parameter
 # The Residual becomes 60, from 61 because we introduce this another group
 expr_lm = ols('expr ~ age*dose', data=df_cleaned).fit()
 table_2 = sm.stats.anova_lm(expr_lm, type=2)
 print(table_2)
+
 
 # 6. Conclusion
 # If H-zero is TRUE then F has to be very small, close to 0 and P > 0.05
@@ -179,6 +184,7 @@ print(table_2)
 # This allows us to say that there is statistical significance in results grouped by age (Young and Old)
 # For the dose and age:dose result P > 0.05 and F is very small, less than 1.
 # This allows us to say that H-zero is true for dose and age:dose groups.
+
 
 # 7. References
 # Based on Masha Kubyshina, Statistics Basics Two Factor Dispersion
